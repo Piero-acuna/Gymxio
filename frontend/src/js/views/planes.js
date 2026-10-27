@@ -1,0 +1,2 @@
+// Gymxio · src/js/views/planes.js
+V.planes=()=>`<div class="plans">${Object.entries(PL).map(([n,p])=>`<div class="plan"><h3 style="margin:0">${n}</h3><b>${S(p.p)}</b><span class="mut">${p.d==1?'1 día':p.d+' días'}</span><div style="margin:14px 0" class="mut">${D.members.filter(m=>m.plan==n&&st(m)[0]!='bad').length} miembros vigentes</div>${ROLE=='owner'?`<button class="btn s" data-pe="${p.id}">Cambiar precio</button>`:''}</div>`).join('')}</div>`;

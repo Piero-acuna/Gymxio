@@ -1,0 +1,1 @@
+window.CFG={url:'https://TU-PROYECTO.supabase.co',key:'TU-ANON-KEY'};

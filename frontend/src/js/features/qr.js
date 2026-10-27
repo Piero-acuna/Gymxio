@@ -1,0 +1,6 @@
+// Gymxio · src/js/features/qr.js
+let strm;function stop(){if(strm){strm.getTracks().forEach(t=>t.stop());strm=null}}
+async function scan(){modal('<h2>Escanear carnet</h2><video id="vd" playsinline muted></video><p class="mut" style="text-align:center">Apunta al QR del miembro.</p><div class="acts"><button class="btn" data-x>Cancelar</button></div>');
+try{strm=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});const v=$('#vd');v.srcObject=strm;await v.play();const cv=document.createElement('canvas'),x=cv.getContext('2d',{willReadFrequently:true}),bd='BarcodeDetector' in window?new BarcodeDetector({formats:['qr_code']}):null;
+const loop=async()=>{if(!strm)return;let val=null;try{if(v.videoWidth){cv.width=v.videoWidth;cv.height=v.videoHeight;x.drawImage(v,0,0);if(bd){const r=await bd.detect(cv);val=r[0]&&r[0].rawValue}else if(window.jsQR){const i=x.getImageData(0,0,cv.width,cv.height),r=jsQR(i.data,i.width,i.height);val=r&&r.data}}}catch(e){}
+const p=(val||'').split(':');if(p[0]=='GYMXIO'){stop();$('#m').innerHTML='';checkin(null,'qr',val);return}setTimeout(loop,250)};loop()}catch(e){stop();$('#m').innerHTML='';toast('No se pudo abrir la cámara. Revisa el permiso o abre la página en su propia pestaña.','bad')}}

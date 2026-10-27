@@ -1,0 +1,5 @@
+{
+  "name": "gymxio-frontend",
+  "private": true,
+  "scripts": { "dev": "npx serve . -l 5173" }
+}

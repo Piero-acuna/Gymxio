@@ -1,0 +1,6 @@
+// Gymxio · src/js/views/lists.js
+function mt(){const q=($('#q').value||'').toLowerCase();const r=D.members.filter(m=>(flt=='Todos'||st(m)[1]==flt)&&(m.name.toLowerCase().includes(q)||m.dni.includes(q)));
+$('#tb').innerHTML=r.length?r.map(m=>`<tr><td>${who(m)}</td><td>${m.plan}</td><td class="mono">${fd(m.end)}</td><td>${bd(m)}</td><td class="r"><button class="btn s" data-in="${m.id}">Ingreso</button> <button class="btn s p" data-ren="${m.id}">Renovar</button> <button class="btn s" data-card="${m.id}">Carnet</button> <button class="btn s" data-ed="${m.id}">Editar</button></td></tr>`).join(''):'<tr><td colspan="5" class="empty">Sin resultados. Prueba con otro nombre o registra un miembro nuevo.</td></tr>'}
+function ar(){const q=($('#q2').value||'').toLowerCase();const r=q?D.members.filter(m=>m.name.toLowerCase().includes(q)||m.dni.includes(q)).slice(0,6):[];
+$('#res').innerHTML=r.length?r.map(m=>`<div class="row">${who(m)}${bd(m)}<button class="btn s p" data-in="${m.id}">Ingresar</button></div>`).join(''):'<div class="empty">Escribe un nombre o DNI.</div>';
+const h=D.att.filter(x=>x.d==T).reverse();$('#hoy').innerHTML=h.length?h.map(x=>`<div class="row"><span>${esc(mem(x.mid).name)}</span><span class="mono mut">${x.t}</span></div>`).join(''):'<div class="empty">Aún no hay ingresos hoy.</div>'}
