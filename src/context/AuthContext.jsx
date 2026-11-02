@@ -12,12 +12,12 @@ export function AuthProvider({ children }) {
   const [recovery, setRecovery] = useState(false)
   const loaded = useRef(null)
 
-  const refresh = useCallback(async (s) => {
+  const refresh = useCallback(async (s, silent) => {
     if (!s) { loaded.current = null; setProfile(null); return }
     if (loaded.current === s.user.id) return
-    setLoading(true)
+    if (!silent) setLoading(true)
     try {
-      const q = () => supabase.from('profiles').select('role,full_name,gym_id').eq('user_id', s.user.id).maybeSingle()
+      const q = () => supabase.from('profiles').select('role,full_name,gym_id,phone').eq('user_id', s.user.id).maybeSingle()
       let { data, error } = await q()
       if (error) throw error
       const gym = localStorage.getItem(PENDING)
@@ -42,6 +42,7 @@ export function AuthProvider({ children }) {
 
   const api = {
     session, profile, loading, recovery,
+    reloadProfile: () => { loaded.current = null; return refresh(session, true) },
     signIn: async (email, password) => { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error },
     signUp: async (gym, email, password) => {
       localStorage.setItem(PENDING, gym)

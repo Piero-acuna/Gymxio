@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { addDays, daysBetween, money, status } from '../src/lib/format'
+import { addDays, daysBetween, money, setWarnDays, status } from '../src/lib/format'
 
 describe('format', () => {
   it('suma días cruzando de mes', () => expect(addDays('2026-01-31', 1)).toBe('2026-02-01'))
@@ -11,5 +11,10 @@ describe('format', () => {
     expect(status({ end_date: '2026-11-09' }, t).key).toBe('warn')
     expect(status({ end_date: '2026-11-10' }, t).key).toBe('ok')
     expect(status({ end_date: t }, t).key).toBe('warn')
+  })
+  it('respeta los días de aviso configurados', () => {
+    setWarnDays(3)
+    expect(status({ end_date: '2026-11-07' }, '2026-11-02').key).toBe('ok')
+    setWarnDays(7)
   })
 })
