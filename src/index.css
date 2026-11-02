@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply bg-gx-bg font-sans text-slate-200 antialiased; }
+}
+@layer components {
+  .card { @apply rounded-2xl border border-gx-line bg-gx-card; }
+  .inp { @apply w-full rounded-xl border border-gx-line bg-gx-card px-3.5 py-2.5 text-sm text-slate-100 outline-none focus:border-gx-amb focus:ring-2 focus:ring-gx-amb/20; }
+  .btn { @apply rounded-xl border border-gx-line bg-gx-card px-4 py-2.5 text-sm font-semibold hover:bg-gx-card2 disabled:opacity-40; }
+  .btn-p { @apply border-gx-amb bg-gx-amb text-[#1a1206] shadow-lg shadow-amber-500/25 hover:bg-amber-400; }
+  .btn-s { @apply rounded-lg px-2.5 py-1.5 text-xs; }
+  .lbl { @apply mb-1 mt-3 block text-xs font-semibold text-gx-mut; }
+  .th { @apply bg-gx-card2 px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gx-mut; }
+  .td { @apply border-t border-gx-line px-5 py-3.5; }
+}

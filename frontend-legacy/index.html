@@ -4,7 +4,7 @@
 <title>Gymxio – Gestión de gimnasios</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="src/css/styles.css"></head><body>
 <header>
 <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1206" stroke-width="2.4" stroke-linecap="round"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg></div>
@@ -12,7 +12,7 @@
 <span class="sp"></span><span class="chip a" id="al"></span><div class="av" id="av">J</div><span class="mut" id="un"></span><button class="btn s" id="out">Salir</button>
 </header>
 <main><nav id="nv"></nav><section id="v"></section></main>
-<div id="m"></div><div id="t"></div>
+<div id="auth"></div><div id="m"></div><div id="t"></div>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="src/js/core.js"></script>
@@ -27,6 +27,7 @@
 <script src="src/js/features/biometric.js"></script>
 <script src="src/js/features/qr.js"></script>
 <script src="src/js/api/data.js"></script>
+<script src="src/js/auth/screen.js"></script>
 <script src="src/js/auth/session.js"></script>
 <script src="src/js/ui/actions.js"></script>
 <script src="src/js/main.js"></script>

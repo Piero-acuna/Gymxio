@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/((?!api/|legal.html).*)", "destination": "/index.html" }]
+}

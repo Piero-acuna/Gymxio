@@ -1,7 +1,10 @@
 // Gymxio · src/js/ui/actions.js
 document.addEventListener('click',async e=>{
   const b=e.target.closest('button');if(!b)return;
-  if(b.hasAttribute('data-su'))showLogin('up');
+  if(b.hasAttribute('data-eye')){const i=b.parentElement.querySelector('input');i.type=i.type=='password'?'text':'password'}
+  else if(b.hasAttribute('data-forgot')){const em=($('#au-email').value||'').trim();if(!em)return toast('Escribe tu correo primero','bad');
+    const{error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.href.split('#')[0]});error?toast(error.message,'bad'):toast('Te enviamos un enlace para cambiar tu contraseña','ok')}
+  else if(b.hasAttribute('data-su'))showLogin('up');
   else if(b.hasAttribute('data-li'))showLogin('in');
   else if(b.id=='out'){await sb.auth.signOut();location.reload()}
   else if(b.dataset.pe){const p=Object.values(PL).find(x=>x.id==b.dataset.pe),n=prompt('Nuevo precio (S/)',p.p);if(n===null)return;const pr=parseFloat(n);
@@ -11,6 +14,7 @@ document.addEventListener('click',async e=>{
 document.addEventListener('submit',async e=>{
   e.preventDefault();const f=e.target,k=f.dataset.k,v=Object.fromEntries(new FormData(f));
   try{
+    if(k=='reset'){const{error}=await sb.auth.updateUser({password:v.pw});if(error)throw error;toast('Contraseña actualizada','ok');return boot()}
     if(k=='login'){const{error}=await sb.auth.signInWithPassword({email:v.email,password:v.pw});if(error)throw error;return boot()}
     if(k=='signup'){const{data,error}=await sb.auth.signUp({email:v.email,password:v.pw});if(error)throw error;try{localStorage.setItem('gx_pending',v.gym)}catch(x){}
       return data.session?boot():showLogin('in','Revisa tu correo para confirmar la cuenta y luego entra.')}
