@@ -48,6 +48,7 @@ export default function Shell() {
           </>
         )}
       </main>
+      <footer className="mx-auto max-w-6xl px-6 pb-8 text-center text-sm text-gx-mut"><a href="/legal#terminos">Términos</a> · <a href="/legal#privacidad">Privacidad</a> · <a href="/legal#cambios">Cambios y devoluciones</a> · <a href="/reclamos" className="font-semibold text-slate-200">Libro de Reclamaciones</a></footer>
     </>
   )
 }

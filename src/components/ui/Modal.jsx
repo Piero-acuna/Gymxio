@@ -8,7 +8,7 @@ export default function Modal({ title, onClose, children }) {
   }, [onClose])
   return (
     <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="card w-full max-w-md p-6" role="dialog" aria-label={title}>
+      <div className="card max-h-[92vh] w-full max-w-md overflow-y-auto p-6" role="dialog" aria-label={title}>
         <h2 className="mb-2 text-lg font-bold">{title}</h2>
         {children}
       </div>

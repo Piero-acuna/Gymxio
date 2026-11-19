@@ -84,8 +84,8 @@ export default function AuthPage() {
         </form>
         <p className="mb-3.5 mt-6 text-center text-sm text-slate-600">Cada gimnasio tiene su propio espacio aislado de datos</p>
         <div className="flex max-w-[480px] flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-slate-400">
-          <a href="/legal.html#terminos">Términos y Condiciones</a><a href="/legal.html#cambios">Cambios y Devoluciones</a><a href="/legal.html#privacidad">Política de Privacidad</a>
-          <a href="/legal.html#reclamaciones" className="flex items-center gap-2 font-semibold text-slate-200"><Icon n="book" s={16} /> Libro de Reclamaciones</a>
+          <a href="/legal#terminos">Términos y Condiciones</a><a href="/legal#cambios">Cambios y Devoluciones</a><a href="/legal#privacidad">Política de Privacidad</a>
+          <a href="/reclamos" className="flex items-center gap-2 font-semibold text-slate-200"><Icon n="book" s={16} /> Libro de Reclamaciones</a>
         </div>
         <p className="mt-3.5 text-[13px] text-slate-600">© {new Date().getFullYear()} Gymxio</p>
       </div>

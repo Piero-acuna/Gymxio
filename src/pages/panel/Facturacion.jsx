@@ -8,7 +8,7 @@ const csv = (rows) => rows.map((r) => r.map((c) => `"${String(c ?? '').replace(/
 export default function Facturacion({ gym }) {
   const { info, payments, members, reload } = gym
   const run = useRun(reload)
-  const name = (id) => members.find((m) => m.id === id)?.name ?? '—'
+  const name = (p) => members.find((m) => m.id === p.member_id)?.name ?? p.member_name ?? '—'
   const meses = {}
   payments.forEach((p) => { const k = p.paid_on.slice(0, 7); meses[k] = (meses[k] || 0) + Number(p.amount) })
 
@@ -18,7 +18,7 @@ export default function Facturacion({ gym }) {
     run(() => updateGym(info.id, { legal_name: v.legal_name.trim() || null, ruc: v.ruc.trim() || null, fiscal_address: v.fiscal_address.trim() || null }), 'Datos fiscales guardados')
   }
   const download = () => {
-    const body = csv([['Fecha', 'Miembro', 'Plan', 'Método', 'Monto'], ...payments.map((p) => [p.paid_on, name(p.member_id), p.plan_name, p.method, p.amount])])
+    const body = csv([['Fecha', 'Miembro', 'Plan', 'Método', 'Monto'], ...payments.map((p) => [p.paid_on, name(p), p.plan_name, p.method, p.amount])])
     const a = document.createElement('a')
     a.href = URL.createObjectURL(new Blob(['\ufeff' + body], { type: 'text/csv;charset=utf-8' }))
     a.download = 'pagos-gymxio.csv'

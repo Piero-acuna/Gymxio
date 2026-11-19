@@ -1,64 +1,59 @@
 import { useState } from 'react'
-import { deleteEquipment, listEquipment, saveEquipment } from '../../lib/api'
+import { listStaff, staffApi } from '../../lib/api'
 import { useLoad, useRun } from '../../hooks/useAsync'
 import Modal from '../../components/ui/Modal'
 import Field from '../../components/ui/Field'
 
-const CATS = ['Cardio', 'Fuerza', 'Peso libre', 'Funcional', 'Otros']
-const ST = {
-  operativo: ['Operativo', 'border-gx-ok/40 bg-gx-ok/10 text-gx-ok'],
-  mantenimiento: ['Mantenimiento', 'border-gx-warn/40 bg-gx-warn/10 text-gx-warn'],
-  fuera_servicio: ['Fuera de servicio', 'border-gx-bad/40 bg-gx-bad/10 text-gx-bad'],
-}
+const ROLE = { owner: 'Dueño', reception: 'Recepción', trainer: 'Entrenador' }
+const TITLE = { new: 'Nueva cuenta de empleado', ed: 'Editar empleado', pw: 'Nueva contraseña' }
+const OK = { new: 'Cuenta creada', ed: 'Cambios guardados', pw: 'Contraseña actualizada' }
 
-export default function Equipos({ gym, role }) {
-  const { data, ready, reload } = useLoad(listEquipment)
+/** Equipo de trabajo: el dueño crea las cuentas de sus empleados. */
+export default function Equipos() {
+  const { data, ready, reload } = useLoad(listStaff)
   const run = useRun(reload)
-  const [edit, setEdit] = useState(null)
-  const canEdit = role !== 'trainer'
-  const count = (s) => data.filter((e) => e.status === s).reduce((a, e) => a + e.quantity, 0)
+  const [m, setM] = useState(null)
 
-  const save = (e) => {
+  const submit = (e) => {
     e.preventDefault()
     const v = Object.fromEntries(new FormData(e.target))
-    run(() => saveEquipment(gym.info.id, edit.id, { name: v.name.trim(), category: v.category, quantity: +v.quantity, status: v.status, notes: v.notes.trim() || null }), 'Equipo guardado', () => setEdit(null))
+    const body = { new: { action: 'create', ...v }, ed: { action: 'update', user_id: m.u?.user_id, ...v }, pw: { action: 'reset-password', user_id: m.u?.user_id, password: v.password } }[m.type]
+    run(() => staffApi(body), OK[m.type], () => setM(null))
   }
-  const remove = (x) => window.confirm(`¿Eliminar "${x.name}"?`) && run(() => deleteEquipment(x.id), 'Equipo eliminado')
+  const remove = (u) => window.confirm(`¿Eliminar la cuenta de ${u.full_name || u.email}? Ya no podrá entrar.`) && run(() => staffApi({ action: 'remove', user_id: u.user_id }), 'Cuenta eliminada')
+  const u = m?.u
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        {Object.entries(ST).map(([k, [label, cls]]) => <span key={k} className={`rounded-md border px-3 py-1 text-xs font-semibold ${cls}`}>{label}: {count(k)}</span>)}
-        <span className="flex-1" />
-        {canEdit && <button className="btn btn-p" onClick={() => setEdit({})}>＋ Equipo</button>}
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <p className="text-sm text-gx-mut">Cada empleado entra con su correo y contraseña en la pantalla de acceso.</p>
+        <button className="btn btn-p whitespace-nowrap" onClick={() => setM({ type: 'new' })}>＋ Empleado</button>
       </div>
       <div className="card overflow-x-auto">
         <table className="w-full min-w-[640px]">
-          <thead><tr><th className="th">Equipo</th><th className="th">Categoría</th><th className="th text-right">Unidades</th><th className="th">Estado</th><th className="th">Notas</th>{canEdit && <th className="th text-right">Acciones</th>}</tr></thead>
+          <thead><tr><th className="th">Nombre</th><th className="th">Correo</th><th className="th">Teléfono</th><th className="th">Rol</th><th className="th text-right">Acciones</th></tr></thead>
           <tbody>
             {data.map((x) => (
-              <tr key={x.id}>
-                <td className="td font-semibold">{x.name}</td><td className="td">{x.category}</td><td className="td text-right font-mono">{x.quantity}</td>
-                <td className="td"><span className={`rounded-md border px-2.5 py-0.5 text-xs font-semibold ${ST[x.status][1]}`}>{ST[x.status][0]}</span></td>
-                <td className="td text-gx-mut">{x.notes}</td>
-                {canEdit && <td className="td space-x-1.5 text-right"><button className="btn btn-s" onClick={() => setEdit(x)}>Editar</button><button className="btn btn-s" onClick={() => remove(x)}>Eliminar</button></td>}
+              <tr key={x.user_id}>
+                <td className="td font-semibold">{x.full_name || 'Sin nombre'}</td><td className="td">{x.email}</td><td className="td font-mono">{x.phone}</td><td className="td">{ROLE[x.role]}</td>
+                <td className="td space-x-1.5 text-right">
+                  {x.role !== 'owner' && <><button className="btn btn-s" onClick={() => setM({ type: 'ed', u: x })}>Editar</button><button className="btn btn-s" onClick={() => setM({ type: 'pw', u: x })}>Contraseña</button><button className="btn btn-s" onClick={() => remove(x)}>Eliminar</button></>}
+                </td>
               </tr>
             ))}
-            {ready && !data.length && <tr><td colSpan={6} className="td py-8 text-center text-gx-mut">Aún no registras equipos.</td></tr>}
+            {ready && !data.length && <tr><td colSpan={5} className="td py-8 text-center text-gx-mut">Sin personal.</td></tr>}
           </tbody>
         </table>
       </div>
-      {edit && (
-        <Modal title={edit.id ? 'Editar equipo' : 'Nuevo equipo'} onClose={() => setEdit(null)}>
-          <form onSubmit={save}>
-            <Field label="Nombre" name="name" required defaultValue={edit.name} placeholder="Ej. Caminadora" />
-            <label className="lbl">Categoría</label>
-            <select name="category" className="inp" defaultValue={edit.category || 'Cardio'}>{CATS.map((c) => <option key={c}>{c}</option>)}</select>
-            <Field label="Unidades" name="quantity" type="number" min="0" required defaultValue={edit.quantity ?? 1} />
-            <label className="lbl">Estado</label>
-            <select name="status" className="inp" defaultValue={edit.status || 'operativo'}>{Object.entries(ST).map(([k, [l]]) => <option key={k} value={k}>{l}</option>)}</select>
-            <Field label="Notas" name="notes" defaultValue={edit.notes || ''} placeholder="Opcional" />
-            <div className="mt-5 flex justify-end gap-2.5"><button type="button" className="btn" onClick={() => setEdit(null)}>Cancelar</button><button className="btn btn-p">Guardar</button></div>
+      {m && (
+        <Modal title={TITLE[m.type]} onClose={() => setM(null)}>
+          <form onSubmit={submit}>
+            {m.type !== 'pw' && <Field label="Nombre completo" name="full_name" defaultValue={u?.full_name || ''} required />}
+            {m.type === 'new' && <Field label="Correo" name="email" type="email" required autoComplete="off" />}
+            {m.type !== 'ed' && <Field label={m.type === 'new' ? 'Contraseña inicial' : 'Contraseña nueva'} name="password" type="text" minLength={6} required autoComplete="off" />}
+            {m.type !== 'pw' && <Field label="Teléfono" name="phone" defaultValue={u?.phone || ''} />}
+            {m.type !== 'pw' && <><label className="lbl">Rol</label><select name="role" className="inp" defaultValue={u?.role || 'reception'}><option value="reception">Recepción</option><option value="trainer">Entrenador</option></select></>}
+            <div className="mt-5 flex justify-end gap-2.5"><button type="button" className="btn" onClick={() => setM(null)}>Cancelar</button><button className="btn btn-p">Guardar</button></div>
           </form>
         </Modal>
       )}

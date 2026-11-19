@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
       const q = () => supabase.from('profiles').select('role,full_name,gym_id,phone').eq('user_id', s.user.id).maybeSingle()
       let { data, error } = await q()
       if (error) throw error
-      const gym = localStorage.getItem(PENDING)
+      const gym = s.user.user_metadata?.gym_name || localStorage.getItem(PENDING)
       if (!data && gym) { // primer ingreso tras confirmar el correo: crea el gimnasio
         const r = await supabase.rpc('create_gym', { p_name: gym }); if (r.error) throw r.error
         localStorage.removeItem(PENDING); ;({ data } = await q())
@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
     signIn: async (email, password) => { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error },
     signUp: async (gym, email, password) => {
       localStorage.setItem(PENDING, gym)
-      const { data, error } = await supabase.auth.signUp({ email, password }); if (error) throw error
+      const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { gym_name: gym } } }); if (error) throw error
       return !!data.session
     },
     resetPassword: async (email) => { const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin }); if (error) throw error },

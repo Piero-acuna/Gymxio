@@ -4,13 +4,15 @@ import Equipos from './Equipos'
 import Facturacion from './Facturacion'
 import Configuracion from './Configuracion'
 import Soporte from './Soporte'
+import Reclamos from './Reclamos'
 
 const ALL = ['owner', 'reception', 'trainer']
 const SECTIONS = [
   ['datos', 'Mis datos', MisDatos, ALL],
-  ['equipos', 'Equipos', Equipos, ALL],
+  ['equipos', 'Equipos', Equipos, ['owner']],
   ['facturacion', 'Facturación', Facturacion, ['owner']],
   ['config', 'Configuración', Configuracion, ['owner']],
+  ['reclamos', 'Reclamos', Reclamos, ['owner']],
   ['soporte', 'Soporte', Soporte, ALL],
 ]
 
